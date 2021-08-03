@@ -36,6 +36,10 @@ const config: HardhatUserConfig = {
         mnemonic: process.env.METAMASK_SEED_WORDS, // test test test test test test test test test test test junk
       },
     },
+    rinkeby: {
+      url: process.env.RINKEBY_URL,
+      accounts: [ process.env.ACCOUNT_1 ]
+    }
   },
   solidity: {
     compilers: [
