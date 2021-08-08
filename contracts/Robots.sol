@@ -11,7 +11,7 @@ interface Garage {
 
 contract Robots is ERC721PresetMinterPauserAutoId, Garage {
     address public developer;
-    uint256 public constant override price = 1e18;
+    uint256 public constant override price = 1e16;
 
     constructor(
         string memory name,
