@@ -6,6 +6,7 @@ import "hardhat-deploy";
 import "@symfoni/hardhat-react";
 import "hardhat-typechain";
 import "@typechain/ethers-v5";
+import "./tasks";
 
 require("dotenv").config();
 
