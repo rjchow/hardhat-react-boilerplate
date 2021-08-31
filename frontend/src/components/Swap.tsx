@@ -32,6 +32,12 @@ export const Swap: React.FC<Props> = ({ tokenA, tokenB }) => {
     fetchTokenSymbols();
   }, [ERC20Factory.instance, tokenA, tokenB]);
 
+  const [amount, setAmount] = useState<number>(0);
+
+  const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(parseInt(event.target.value));
+  };
+
   return (
     <div className="bg-white shadow sm:rounded-lg">
       <div className="px-4 py-5">
@@ -47,6 +53,7 @@ export const Swap: React.FC<Props> = ({ tokenA, tokenB }) => {
               id="amount"
               className="mx-2 flex-item shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block  border-gray-300 rounded-md text-gray-800 text-2xl w-1/6 text-center"
               placeholder="20"
+              onChange={handleAmountChange}
             />
           </div>
           <div></div>
