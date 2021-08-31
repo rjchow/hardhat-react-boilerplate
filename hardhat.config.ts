@@ -1,11 +1,11 @@
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
-import "hardhat-deploy-ethers";
 import "hardhat-deploy";
 import "@symfoni/hardhat-react";
 import "hardhat-typechain";
 import "@typechain/ethers-v5";
+import "./tasks";
 
 require("dotenv").config();
 
@@ -46,6 +46,7 @@ const config: HardhatUserConfig = {
     },
     rinkeby: {
       url: process.env.RINKEBY_URL,
+      // @ts-ignore
       accounts: [process.env.ACCOUNT_1, process.env.ACCOUNT_2],
     },
   },
