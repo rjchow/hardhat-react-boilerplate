@@ -1,5 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ERC20Context } from "../hardhat/SymfoniContext";
+import {
+  ERC20Context,
+  UniswapV2Router02Context,
+} from "../hardhat/SymfoniContext";
 import { ERC20 } from "../hardhat/typechain/ERC20";
 import ethers from "ethers";
 interface Props {
@@ -15,7 +18,6 @@ export const Swap: React.FC<Props> = ({ tokenA, tokenB }) => {
 
   const [tokenASymbol, setTokenASymbol] = useState<string>();
   const [tokenBSymbol, setTokenBSymbol] = useState<string>();
-
 
   useEffect(() => {
     if (ERC20Factory.instance) {
@@ -37,6 +39,29 @@ export const Swap: React.FC<Props> = ({ tokenA, tokenB }) => {
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(parseInt(event.target.value));
   };
+
+  const router = useContext(UniswapV2Router02Context);
+  const [exchangeAmount, setExchangeAmount] = useState<string>("0");
+
+  useEffect(() => {
+    const fetchExchangeAmount = async () => {
+      if (!router.instance) {
+        console.log("router instance not found");
+        return;
+      }
+
+      if (amount > 0) {
+        // router gets angry if you pass in a 0
+        const amountsOut = await router.instance.getAmountsOut(
+          ethers.utils.parseEther(amount.toString()),
+          [tokenA, tokenB]
+        );
+        setExchangeAmount(ethers.utils.formatUnits(amountsOut[1].toString(), 18));
+      }
+    };
+
+    fetchExchangeAmount();
+  }, [router.instance, amount, tokenA, tokenB]);
 
   return (
     <div className="bg-white shadow sm:rounded-lg">
@@ -66,6 +91,7 @@ export const Swap: React.FC<Props> = ({ tokenA, tokenB }) => {
               disabled
               className="mx-2 flex-item shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block  border-gray-300 rounded-md text-gray-800 text-2xl w-1/6 text-center"
               placeholder="20"
+              value={exchangeAmount}
             />
           </div>
           <div></div>
