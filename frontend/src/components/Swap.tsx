@@ -24,15 +24,19 @@ export const Swap: React.FC<Props> = ({ tokenA, tokenB }) => {
       setTokenAInstance(ERC20Factory.instance!.attach(tokenA));
       setTokenBInstance(ERC20Factory.instance!.attach(tokenB));
     }
+  }, [ERC20Factory.instance, tokenA, tokenB]);
 
+  useEffect(() => {
     const fetchTokenSymbols = async () => {
-      if (!tokenAInstance || !tokenBInstance) return;
-
+      if (!tokenAInstance || !tokenBInstance)  {
+        return;
+      }
+      
       setTokenASymbol(await tokenAInstance.symbol());
       setTokenBSymbol(await tokenBInstance.symbol());
     };
     fetchTokenSymbols();
-  }, [ERC20Factory.instance, tokenA, tokenB]);
+  }, [tokenAInstance, tokenBInstance])
 
   const [amount, setAmount] = useState<number>(0);
 
