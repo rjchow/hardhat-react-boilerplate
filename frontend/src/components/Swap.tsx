@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import {
   ERC20Context,
   UniswapV2Router02Context,
+  CurrentAddressContext,
 } from "../hardhat/SymfoniContext";
 import { ERC20 } from "../hardhat/typechain/ERC20";
 import ethers from "ethers";
@@ -67,6 +68,32 @@ export const Swap: React.FC<Props> = ({ tokenA, tokenB }) => {
     fetchExchangeAmount();
   }, [router.instance, amount, tokenA, tokenB]);
 
+  const [currentAddress] = useContext(CurrentAddressContext);
+
+  const handleSwap = async () => {
+    if (!router.instance || !tokenAInstance) {
+      console.log("router or token instance not found");
+      return;
+    }
+    const time = Math.floor(Date.now() / 1000) + 3600;
+
+    await (
+      await tokenAInstance.approve(
+        router.instance.address,
+        ethers.utils.parseEther(amount.toString())
+      )
+    ).wait();
+    await (
+      await router.instance.swapExactTokensForTokens(
+        ethers.utils.parseEther(amount.toString()),
+        0, // we shouldn't leave this as 0, it is dangerous in real trading
+        [tokenA, tokenB],
+        currentAddress,
+        time
+      )
+    ).wait();
+  };
+
   return (
     <div className="bg-white shadow sm:rounded-lg">
       <div className="px-4 py-5">
@@ -103,6 +130,7 @@ export const Swap: React.FC<Props> = ({ tokenA, tokenB }) => {
           <button
             type="submit"
             className="mt-3 inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-gray-800 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={handleSwap}
           >
             Swap!
           </button>
